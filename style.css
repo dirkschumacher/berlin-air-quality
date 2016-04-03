@@ -14,8 +14,13 @@ body {
   font-size: 4em;
 }
 
-.alert {
-  color: black;
+.alert-over-threshold {
+  color: #BD0026;
+}
+
+
+.alert-midlevel {
+  color: #FFEDA0;
 }
 
 /* Loading indicator code from http://tobiasahlin.com/spinkit/  */
