@@ -93,7 +93,7 @@
       $(document).ready(function() {
         var apiUrl = "https://murmuring-ridge-57765.herokuapp.com/api/v1/current";
         $.get(apiUrl, function(data) {
-          $("#last-updated").text(data.measurement_datetime);
+          $("#last-updated").text((new Date(data.measurement_datetime)).toString());
           $("#value-temp").text(data.temp);
           $("#value-wind").text(data.wind_speed);
           $("#value-wind-direction").text(data.wind_direction);
