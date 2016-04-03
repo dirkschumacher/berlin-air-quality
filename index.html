@@ -1,124 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Berlin air quality</title>
-    
-    <!-- Bootstrap --><!-- Latest compiled and minified CSS -->
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-    
     <link rel="stylesheet" href="style.css">
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body>
-  <!-- Great loading indicator from http://tobiasahlin.com/spinkit/ -->
-  <div class="sk-folding-cube" id="loading-indicator">
-    <div class="sk-cube1 sk-cube"></div>
-    <div class="sk-cube2 sk-cube"></div>
-    <div class="sk-cube4 sk-cube"></div>
-    <div class="sk-cube3 sk-cube"></div>
-  </div>
-    <div class="container" id="main-content-container" style="display: none">
-      <div class="page-header">
-        <h1>Berlin Air Quality</h1>
-        <p>last updated: <span id="last-updated">-</span></p>
-      </div>
-      <div class="container-fluid">
-        <h2>Temperature/Wind</h2>
-        <p>Measured in Berlin-Dahlem</p>
-        <div class="row">
-          <div class="col-md-6">
-              <span class="glyphicon glyphicon-asterisk value-icon" aria-hidden="true"></span>&nbsp;
-              <span class="measurement-value" id="value-temp"></span> °C
-          </div>
-          <div class="col-md-6">
-              <span class="glyphicon glyphicon-forward value-icon" aria-hidden="true"></span>&nbsp;
-              <span class="measurement-value" id="value-wind"></span> m/s (<span id="value-wind-direction"></span>)
-          </div>
-        </div>
-        <h2>Particulate matter</h2>
-        <p>Maximum PM10 in µg/m³</p>
-        <div class="row">
-          <div class="col-md-6">
-            <span class="glyphicon glyphicon glyphicon-road value-icon" aria-hidden="true"></span>&nbsp; 
-            <span class="measurement-value" id="value-pm10-high-traffic">-</span>
-             at <span id="value-pm10-high-traffic-location">-</span>
-          </div>
-          <div class="col-md-6">
-            <span class="glyphicon glyphicon glyphicon-home value-icon" aria-hidden="true"></span>&nbsp;
-            <span class="measurement-value" id="value-pm10-high-city">-</span> 
-             at <span id="value-pm10-high-city-location">-</span>
-          </div>
-        </div>
-        <h2>Ozone</h2>
-        <p>O3 in µg/m³</p>
-        <div class="row">
-          <div class="col-md-6">
-            <span class="glyphicon glyphicon glyphicon-tree-deciduous value-icon" aria-hidden="true"></span>&nbsp;
-            <span class="measurement-value" id="value-ozone-suburb-low">-</span>  <span class="measurement-value">-</span> 
-            <span class="measurement-value" id="value-ozone-suburb-high">-</span>
-            at <span id="value-ozone-suburb-low-location">-</span> / <span id="value-ozone-suburb-high-location">-</span>
-          </div>
-          <div class="col-md-6">
-            <span class="glyphicon glyphicon glyphicon-home value-icon" aria-hidden="true"></span>&nbsp;
-            <span class="measurement-value" id="value-ozone-city-low">-</span> <span class="measurement-value">-</span>
-            <span class="measurement-value" id="value-ozone-city-high">-</span> 
-            at <span id="value-ozone-city-low-location">-</span> / <span id="value-ozone-city-high-location">-</span>
-          </div>
-        </div>
-      </div>
-      <footer class="footer">
-      <hr>
-      <div class="container">
-        <p class="text-muted">Data from <a href="http://www.met.fu-berlin.de/senum/messwerte/aktuell.txt">fu-berlin.de</a>. Just a development version.</p>
-      </div>
-    </footer>
-    </div>
+</head>
 
-    
+<body>
+    <!-- Great loading indicator from http://tobiasahlin.com/spinkit/ -->
+    <div class="sk-folding-cube" id="loading-indicator">
+        <div class="sk-cube1 sk-cube"></div>
+        <div class="sk-cube2 sk-cube"></div>
+        <div class="sk-cube4 sk-cube"></div>
+        <div class="sk-cube3 sk-cube"></div>
+    </div>
+    <div class="container" id="main-content-container" style="display: none">
+        <div class="page-header">
+            <h1>Berlin Air Quality</h1>
+            <p>last updated: <span id="last-updated">-</span></p>
+        </div>
+        <div class="container-fluid">
+            <h2>Temperature/wind</h2>
+            <p>Measured in Berlin-Dahlem</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-asterisk value-icon" aria-hidden="true"></span>&nbsp;
+                    <span class="measurement-value" id="value-temp"></span> °C
+                </div>
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon-forward value-icon" aria-hidden="true"></span>&nbsp;
+                    <span class="measurement-value" id="value-wind"></span> m/s (direction: <span id="value-wind-direction"></span>)
+                </div>
+            </div>
+            <h2>Particulate matter</h2>
+            <p>Maximum PM10 in µg/m³</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon glyphicon-road value-icon" aria-hidden="true"></span>&nbsp;
+                    <span class="measurement-value" id="value-pm10-high-traffic">-</span> at <span id="value-pm10-high-traffic-location">-</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon glyphicon-home value-icon" aria-hidden="true"></span>&nbsp;
+                    <span class="measurement-value" id="value-pm10-high-city">-</span> at <span id="value-pm10-high-city-location">-</span>
+                </div>
+            </div>
+            <h2>Nitrogen dioxide</h2>
+            <p>NO2 in µg/m³</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon glyphicon-road value-icon" aria-hidden="true"></span>&nbsp;
+                    <span class="measurement-value" id="value-no2-high-traffic">-</span> at <span id="value-no2-high-traffic-location">-</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon glyphicon-home value-icon" aria-hidden="true"></span>&nbsp;
+                    <span class="measurement-value" id="value-no2-high-city">-</span> at <span id="value-no2-high-city-location">-</span>
+                </div>
+            </div>
+            <h2>Ozone</h2>
+            <p>O3 in µg/m³</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon glyphicon-tree-deciduous value-icon" aria-hidden="true"></span>&nbsp;
+                    <span class="measurement-value" id="value-ozone-suburb-low">-</span> <span class="measurement-value">-</span>
+                    <span class="measurement-value" id="value-ozone-suburb-high">-</span> at <span id="value-ozone-suburb-low-location">-</span> / <span id="value-ozone-suburb-high-location">-</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="glyphicon glyphicon glyphicon-home value-icon" aria-hidden="true"></span>&nbsp;
+                    <span class="measurement-value" id="value-ozone-city-low">-</span> <span class="measurement-value">-</span>
+                    <span class="measurement-value" id="value-ozone-city-high">-</span> at <span id="value-ozone-city-low-location">-</span> / <span id="value-ozone-city-high-location">-</span>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <hr>
+            <div class="container">
+                <p class="text-muted">Data from <a href="http://www.met.fu-berlin.de/senum/messwerte/aktuell.txt">fu-berlin.de</a>. Just a development version.</p>
+            </div>
+        </footer>
+    </div>
     <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
     <script>
-      $(document).ready(function() {
+    $(document).ready(function() {
         var apiUrl = "https://murmuring-ridge-57765.herokuapp.com/api/v1/current";
         $.get(apiUrl, function(data) {
-          $("#last-updated").text((new Date(data.measurement_datetime)).toString());
-          $("#value-temp").text(data.temp);
-          $("#value-wind").text(data.wind_speed);
-          $("#value-wind-direction").text(data.wind_direction);
-          $("#value-pm10-high-city").text(data.high_pm10_value_city);
-          $("#value-pm10-high-traffic").text(data.high_pm10_value_street);
-          if (+data.high_pm10_value_traffic > 50) {
-            $("#value-pm10-high-traffic").addClass("alert");
-          }
-          if (+data.high_pm10_value_city > 50) {
-            $("#value-pm10-high-city").addClass("alert");
-          }
-          $("#value-pm10-high-city-location").text(data.high_pm10_location_city);
-          $("#value-pm10-high-traffic-location").text(data.high_pm10_location_street);
-          $("#value-ozone-city-low").text(data.low_ozon03_value_city);
-          $("#value-ozone-city-high").text(data.high_ozon03_value_city);
-          $("#value-ozone-city-low-location").text(data.low_ozon03_location_city);
-          $("#value-ozone-city-high-location").text(data.high_ozon03_location_city);
-          $("#value-ozone-suburb-low").text(data.low_ozon03_value_suburb);
-          $("#value-ozone-suburb-high").text(data.high_ozon03_value_suburb);
-          $("#value-ozone-suburb-low-location").text(data.low_ozon03_location_suburb);
-          $("#value-ozone-suburb-high-location").text(data.high_ozon03_location_suburb);
-          $("#loading-indicator").hide();
-          $("#main-content-container").show();
+            $("#last-updated").text((new Date(Date.parse(data.measurement_datetime))).toString());
+            $("#value-temp").text(data.temp);
+            $("#value-wind").text(data.wind_speed);
+            $("#value-wind-direction").text(data.wind_direction);
+            $("#value-pm10-high-city").text(data.high_pm10_value_city);
+            $("#value-pm10-high-traffic").text(data.high_pm10_value_street);
+            if (+data.high_pm10_value_traffic > 50) {
+                $("#value-pm10-high-traffic").addClass("alert");
+            }
+            if (+data.high_pm10_value_city > 50) {
+                $("#value-pm10-high-city").addClass("alert");
+            }
+            $("#value-pm10-high-city-location").text(data.high_pm10_location_city);
+            $("#value-pm10-high-traffic-location").text(data.high_pm10_location_street);
+
+            $("#value-no2-high-city").text(data.high_no2_value_city);
+            $("#value-no2-high-traffic").text(data.high_no2_value_street);
+            $("#value-no2-high-city-location").text(data.high_no2_location_city);
+            $("#value-no2-high-traffic-location").text(data.high_no2_location_street);
+
+            $("#value-ozone-city-low").text(data.low_ozon03_value_city);
+            $("#value-ozone-city-high").text(data.high_ozon03_value_city);
+            $("#value-ozone-city-low-location").text(data.low_ozon03_location_city);
+            $("#value-ozone-city-high-location").text(data.high_ozon03_location_city);
+            $("#value-ozone-suburb-low").text(data.low_ozon03_value_suburb);
+            $("#value-ozone-suburb-high").text(data.high_ozon03_value_suburb);
+            $("#value-ozone-suburb-low-location").text(data.low_ozon03_location_suburb);
+            $("#value-ozone-suburb-high-location").text(data.high_ozon03_location_suburb);
+            $("#loading-indicator").hide();
+            $("#main-content-container").show();
         });
-      });
+    });
     </script>
- </body>
+</body>
+
 </html>
