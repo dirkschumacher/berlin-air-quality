@@ -5,13 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Berlin air quality</title>
-    <!-- Bootstrap -->
-    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -72,7 +67,7 @@
                 </div>
             </div>
             <h2>Ozone</h2>
-            <p>O3 in µg/m³</p>
+            <p>Minimum/maximum O3 in µg/m³</p>
             <div class="row" id="ozone-indicators-container">
                 <div class="col-md-6">
                     <span id="ozone-suburb-icon" class="glyphicon glyphicon glyphicon-tree-deciduous value-icon" aria-hidden="true"></span>&nbsp;
@@ -105,7 +100,7 @@
             domContainer.addClass("alert-midlevel");
         }
     };
-    var apiUrl = "https://murmuring-ridge-57765.herokuapp.com/api/v1/current";
+    var apiUrl = "https://e7kxav3rg1.execute-api.eu-central-1.amazonaws.com/production/api/v1/current";
     var firstTimeLoad = true;
     var updateNumbers = function() {
         $.get(apiUrl, function(data) {
