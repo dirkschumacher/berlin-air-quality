@@ -156,6 +156,9 @@
     };
     $(document).ready(function() {
         updateNumbers();
+
+        // this simply counts visitors; did not want to use google analytics et al.
+        // does not store any PII
         $.get("https://murmuring-ridge-57765.herokuapp.com/api/v1/count-visitor");
     });
     </script>
