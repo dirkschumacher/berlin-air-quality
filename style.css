@@ -4,10 +4,15 @@ body {
 }
 
 .text-muted {
-  color: #EEE;
+  color: #DDD;
 }
 .value-icon {
   font-size: 4em;
+}
+
+.expand-button {
+  color: #EEE;
+  cursor: pointer;
 }
 
 .measurement-value{
@@ -18,6 +23,20 @@ body {
   color: #BD0026;
 }
 
+/*remove background tick lines*/
+
+.nv-axis text {
+  fill: #FFF;
+  font-size: 0.58em;
+}
+
+.nv-axis > line {
+  fill: #FFF !important;
+}
+
+.nv-legend-text {
+  fill: #FFF;
+}
 
 .alert-midlevel {
   color: #FFEDA0;

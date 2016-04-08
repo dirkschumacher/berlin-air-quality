@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Berlin air quality</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.2/nv.d3.min.css">
     <link rel="stylesheet" href="style.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -42,8 +43,21 @@
                     <span class="measurement-value" id="value-wind"></span> m/s (direction: <span id="value-wind-direction"></span>)
                 </div>
             </div>
-            <h2>Particulate matter</h2>
+            <h2>Particulate matter <span id="expand-pm10-time-series" class="glyphicon glyphicon glyphicon-time expand-button" aria-hidden="true"></span></h2>
             <p>Maximum PM10 in µg/m³</p>
+            <div id="pm10-time-series-container" style="display:none;">
+                <div class="loading-indicator">
+                    <div class="sk-folding-cube" id="loading-indicator">
+                        <div class="sk-cube1 sk-cube"></div>
+                        <div class="sk-cube2 sk-cube"></div>
+                        <div class="sk-cube4 sk-cube"></div>
+                        <div class="sk-cube3 sk-cube"></div>
+                    </div>
+                </div>
+                <div style="height:100%;">
+                    <svg class="chart"></svg>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6" id="pm10-traffic-container">
                     <span class="glyphicon glyphicon glyphicon-road value-icon" aria-hidden="true"></span>&nbsp;
@@ -54,8 +68,21 @@
                     <span class="measurement-value" id="value-pm10-high-city">-</span> at <span id="value-pm10-high-city-location">-</span>
                 </div>
             </div>
-            <h2>Nitrogen dioxide</h2>
+            <h2>Nitrogen dioxide <span id="expand-no2-time-series" class="glyphicon glyphicon glyphicon-time expand-button" aria-hidden="true"></span></h2>
             <p>Maximum NO2 in µg/m³</p>
+            <div id="no2-time-series-container" style="display:none;">
+                <div class="loading-indicator">
+                    <div class="sk-folding-cube" id="loading-indicator">
+                        <div class="sk-cube1 sk-cube"></div>
+                        <div class="sk-cube2 sk-cube"></div>
+                        <div class="sk-cube4 sk-cube"></div>
+                        <div class="sk-cube3 sk-cube"></div>
+                    </div>
+                </div>
+                <div style="height:100%;">
+                    <svg class="chart"></svg>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6" id="no2-traffic-container">
                     <span class="glyphicon glyphicon glyphicon-road value-icon" aria-hidden="true"></span>&nbsp;
@@ -90,78 +117,9 @@
         </footer>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script>
-    var checkForAlerts = function(domContainer, value, thresholdHigh, thresholdMidlevel) {
-        domContainer.removeClass("alert-over-threshold");
-        domContainer.removeClass("alert-midlevel");
-        if (+value > thresholdHigh) {
-            domContainer.addClass("alert-over-threshold");
-        } else if (+value > thresholdMidlevel) {
-            domContainer.addClass("alert-midlevel");
-        }
-    };
-    var apiUrl = "https://e7kxav3rg1.execute-api.eu-central-1.amazonaws.com/production/api/v1/current";
-    var firstTimeLoad = true;
-    var updateNumbers = function() {
-        $.get(apiUrl, function(data) {
-            $("#last-updated").text((new Date(Date.parse(data.measurement_datetime))).toString());
-            $("#value-temp").text(data.temp);
-            $("#value-wind").text(data.wind_speed);
-            $("#value-wind-direction").text(data.wind_direction);
-            $("#value-pm10-high-city").text(data.high_pm10_value_city);
-            $("#value-pm10-high-traffic").text(data.high_pm10_value_street);
-            $("#value-pm10-high-city-location").text(data.high_pm10_location_city);
-            $("#value-pm10-high-traffic-location").text(data.high_pm10_location_street);
-
-            // thresholds from umweltbundesamt
-            checkForAlerts($("#pm10-traffic-container"), data.high_pm10_value_street, 50, 30);
-            checkForAlerts($("#pm10-city-container"), data.high_pm10_value_city, 50, 30);
-
-            $("#value-no2-high-city").text(data.high_no2_value_city);
-            $("#value-no2-high-traffic").text(data.high_no2_value_street);
-            $("#value-no2-high-city-location").text(data.high_no2_location_city);
-            $("#value-no2-high-traffic-location").text(data.high_no2_location_street);
-
-            // thresholds from umweltbundesamt
-            checkForAlerts($("#no2-traffic-container"), data.high_no2_value_street, 200, 120);
-            checkForAlerts($("#no2-city-container"), data.high_no2_value_city, 200, 120);
-
-            $("#value-ozone-city-low").text(data.low_ozon03_value_city);
-            $("#value-ozone-city-high").text(data.high_ozon03_value_city);
-            $("#value-ozone-city-low-location").text(data.low_ozon03_location_city);
-            $("#value-ozone-city-high-location").text(data.high_ozon03_location_city);
-            $("#value-ozone-suburb-low").text(data.low_ozon03_value_suburb);
-            $("#value-ozone-suburb-high").text(data.high_ozon03_value_suburb);
-            $("#value-ozone-suburb-low-location").text(data.low_ozon03_location_suburb);
-            $("#value-ozone-suburb-high-location").text(data.high_ozon03_location_suburb);
-
-            // ozone threshold from umweltbundesamt
-            checkForAlerts($("#ozone-city-icon"),
-                Math.max(data.low_ozon03_value_city, data.high_ozon03_value_city),
-                180, 108);
-            checkForAlerts($("#value-ozone-city-low"), data.high_ozon03_value_city, 180, 108);
-            checkForAlerts($("#value-ozone-city-high"), data.high_ozon03_value_city, 180, 108);
-            checkForAlerts($("#ozone-suburb-icon"),
-                Math.max(data.low_ozon03_value_suburb, data.high_ozon03_value_suburb),
-                180, 108);
-            checkForAlerts($("#value-ozone-suburb-low"), data.high_ozon03_value_suburb, 180, 108);
-            checkForAlerts($("#value-ozone-suburb-high"), data.high_ozon03_value_suburb, 180, 108);
-            if (firstTimeLoad) {
-                $("#loading-indicator").hide();
-                $("#main-content-container").show();
-                firstTimeLoad = false;
-            }
-            window.setTimeout(updateNumbers, 1000 * 60 * 60);
-        });
-    };
-    $(document).ready(function() {
-        updateNumbers();
-
-        // this simply counts visitors; did not want to use google analytics et al.
-        // does not store any PII
-        $.get("https://murmuring-ridge-57765.herokuapp.com/api/v1/count-visitor");
-    });
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.2/nv.d3.min.js"></script>
+    <script src="site.js"></script>
 </body>
 
 </html>
