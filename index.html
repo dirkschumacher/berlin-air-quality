@@ -111,8 +111,19 @@
         <footer class="footer">
             <hr>
             <div class="container">
-                <p class="text-muted">Data from <a href="http://www.met.fu-berlin.de/senum/messwerte/aktuell.txt">fu-berlin.de</a>. Just a development version.</p>
+                <p class="text-muted">Data from <a href="http://www.met.fu-berlin.de/senum/messwerte/aktuell.txt">fu-berlin.de</a>. Just a development version. <span id="show-stats-icon" class="glyphicon glyphicon glyphicon-heart" aria-hidden="true"></p>
                 <p class="text-muted">Questions, comments, remarks? Let's discuss on <a href="https://github.com/dirkschumacher/berlin-air-quality/issues">Github</a></p>
+            </div>
+            <div id="stats-container" style="display: none">
+                <div class="loading-indicator">
+                    <div class="sk-folding-cube" id="loading-indicator">
+                        <div class="sk-cube1 sk-cube"></div>
+                        <div class="sk-cube2 sk-cube"></div>
+                        <div class="sk-cube4 sk-cube"></div>
+                        <div class="sk-cube3 sk-cube"></div>
+                    </div>
+                </div>
+                <svg class="chart"></svg>
             </div>
         </footer>
     </div>

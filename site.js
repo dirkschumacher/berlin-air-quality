@@ -61,33 +61,49 @@ var updateNumbers = function() {
         window.setTimeout(updateNumbers, 1000 * 60 * 60);
     });
 };
+
+// manages the toggling of chart containers
+var makeOnToggleChartCallback = function(container, callback) {
+    return function() {
+        if (!container.is(":visible")) {
+            container.find(".chart").empty();
+            return;
+        }
+        container.find(".loading-indicator").show();
+        callback();
+    };
+};
+
+// creates an NVD3 time series from a given mappable thing
+var createNVD3Series = function(data, keyName, xPropertyName, yPropertyName) {
+    return {
+        values: data.map(function(d) {
+            return {
+                x: Date.parse(d[xPropertyName]),
+                y: +d[yPropertyName]
+            };
+        }),
+        key: keyName
+    };
+};
+
 var prepareCharts = function() {
-    var onToggleTimeseries,
-        getLast48Hours,
+    var getLast48Hours,
         renderTimeseries;
+
     // register event handlers
     // handle pm10 clicks
     var registerTSEventHander = function(code, tickValues) {
         $("#expand-" + code + "-time-series").click(function() {
             var container = $("#" + code + "-time-series-container");
-            container.toggle(onToggleTimeseries(container, code, tickValues));
+            container.toggle(makeOnToggleChartCallback(container, function() {
+                getLast48Hours()
+                    .done(renderTimeseries(container, code, tickValues));
+            }));
         });
     };
     registerTSEventHander("pm10", [30, 50]);
     registerTSEventHander("no2", [120, 200]);
-
-    // handles if time series gets expanded
-    onToggleTimeseries = function(container, code, tickValues) {
-        return function() {
-            if (!container.is(":visible")) {
-                container.find(".chart").empty();
-                return;
-            }
-            container.find(".loading-indicator").show();
-            getLast48Hours()
-                .done(renderTimeseries(container, code, tickValues));
-        };
-    };
 
     // gets the data
     // returns promise
@@ -109,39 +125,36 @@ var prepareCharts = function() {
 
                 chart.xAxis
                     .tickFormat(function(d) {
-                        return d3.time.format("%d %B %H:%M")(new Date(d))
+                        return d3.time.format("%d %B %H:%M")(new Date(d));
                     }).rotateLabels(-45)
                 var xScale = d3.time.scale();
                 xScale
-                    .domain(data.map(function(d) {return d.measurement_datetime;}))
+                    .domain(data.map(function(d) {
+                        return d.measurement_datetime;
+                    }))
                     .ticks(d3.time.hour, 1);
                 chart.xScale(xScale)
 
                 chart.yAxis
                     .axisLabel(code.toUpperCase() + " in µg/m³");
-
-                var createSeries = function(keyName, dataPropertyName) {
-                    return {
-                        values: data.map(function(d) {
-                            return {
-                                x: Date.parse(d.measurement_datetime),
-                                y: +d[dataPropertyName]
-                            };
-                        }),
-                        key: keyName
-                    };
-                };
                 var chartData = [
-                    createSeries("City stations", "high_" + code + "_value_city"),
-                    createSeries("Traffic stations", "high_" + code + "_value_street")
+                    createNVD3Series(data, "City stations", "measurement_datetime", "high_" + code + "_value_city"),
+                    createNVD3Series(data, "Traffic stations", "measurement_datetime", "high_" + code + "_value_street")
                 ];
+                console.log(chartData);
                 var maxValue = Math.max(
-                    Math.max.apply(null, chartData[0].values.map(function(d) { return +d.y})),
-                    Math.max.apply(null, chartData[1].values.map(function(d) { return +d.y}))
+                    Math.max.apply(null, chartData[0].values.map(function(d) {
+                        return +d.y
+                    })),
+                    Math.max.apply(null, chartData[1].values.map(function(d) {
+                        return +d.y
+                    }))
                 );
 
                 // set pollutant depend tickvalues
-                chart.yAxis.tickValues(tickValues.filter(function(t) {return t <= maxValue;}));
+                chart.yAxis.tickValues(tickValues.filter(function(t) {
+                    return t <= maxValue;
+                }));
                 chart.forceY([0, maxValue]);
 
                 container.find(".loading-indicator").hide();
@@ -155,10 +168,62 @@ var prepareCharts = function() {
             });
         };
     };
+};
+var prepareStats = function() {
+    var getStats, renderTimeseries;
+    $("#show-stats-icon").click(function() {
+        var container = $("#stats-container");
+        container.toggle(makeOnToggleChartCallback(container, function() {
+            getStats().done(function(data) { renderTimeseries(container, data); });
+        }));
+    });
 
+    // returns a promise for stats
+    getStats = function() {
+        return $.get(baseApiUrl + "/v1/visits");
+    };
+
+    renderTimeseries = function(container, data) {
+        nv.addGraph(function() {
+            var chart = nv.models.lineChart()
+                .margin({
+                    left: 100
+                })
+                //.useInteractiveGuideline(true)
+                .showLegend(true)
+                .showYAxis(true)
+                .showXAxis(true);
+
+            chart.xAxis
+                .tickFormat(function(d) {
+                    return d3.time.format("%Y-%m-%d")(new Date(d));
+                }).rotateLabels(-45)
+            var xScale = d3.time.scale();
+            xScale
+                .domain(data.map(function(d) {
+                    return d.day;
+                }))
+                .ticks(d3.time.day, 1);
+            chart.xScale(xScale);
+
+            var chartData = [
+                createNVD3Series(data, "Pageimpressions", "date", "page_impressions"),
+                createNVD3Series(data, "Unique visits", "date", "unique_visits")
+            ];
+            container.find(".loading-indicator").hide();
+            d3.select(container.find(".chart").get(0))
+                .datum(chartData)
+                .call(chart);
+
+            //Update the chart when window resizes.
+            nv.utils.windowResize(chart.update);
+            return chart;
+        });
+    };
 };
 $(document).ready(function() {
     prepareCharts();
+    prepareStats();
     updateNumbers();
 
     // this simply counts visitors; did not want to use google analytics et al.

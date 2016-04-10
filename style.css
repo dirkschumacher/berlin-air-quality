@@ -15,6 +15,10 @@ body {
   cursor: pointer;
 }
 
+#show-stats-icon {
+  cursor: pointer; 
+}
+
 .measurement-value{
   font-size: 4em;
 }
