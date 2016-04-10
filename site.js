@@ -107,7 +107,7 @@ var prepareCharts = function() {
                     .showYAxis(true)
                     .showXAxis(true);
 
-                chart.xAxis //Chart x-axis settings
+                chart.xAxis
                     .tickFormat(function(d) {
                         return d3.time.format("%d %B %H:%M")(new Date(d))
                     }).rotateLabels(-45)
@@ -117,9 +117,9 @@ var prepareCharts = function() {
                     .ticks(d3.time.hour, 1);
                 chart.xScale(xScale)
 
-                chart.yAxis //Chart y-axis settings
-                    .axisLabel(code.toUpperCase() + " in µg/m³")
-                    .tickValues(tickValues);
+                chart.yAxis
+                    .axisLabel(code.toUpperCase() + " in µg/m³");
+
                 var createSeries = function(keyName, dataPropertyName) {
                     return {
                         values: data.map(function(d) {
@@ -139,6 +139,9 @@ var prepareCharts = function() {
                     Math.max.apply(null, chartData[0].values.map(function(d) { return +d.y})),
                     Math.max.apply(null, chartData[1].values.map(function(d) { return +d.y}))
                 );
+
+                // set pollutant depend tickvalues
+                chart.yAxis.tickValues(tickValues.filter(function(t) {return t <= maxValue;}));
                 chart.forceY([0, maxValue]);
 
                 container.find(".loading-indicator").hide();
